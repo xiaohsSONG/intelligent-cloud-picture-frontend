@@ -1,5 +1,21 @@
 <template>
-  <a-table :columns="columns" :data-source="dataList">
+  <a-form layout="inline" :model="searchParams" @finish="doSearch">
+    <a-form-item label="账号">
+      <a-input v-model:value="searchParams.userAccount" placeholder="输入账号" />
+    </a-form-item>
+    <a-form-item label="用户名">
+      <a-input v-model:value="searchParams.userName" placeholder="输入用户名" />
+    </a-form-item>
+    <a-form-item>
+      <a-button type="primary" html-type="submit">搜索</a-button>
+    </a-form-item>
+  </a-form>
+  <a-table
+    :columns="columns"
+    :data-source="dataList"
+    :pagination="pagination"
+    @change="doTableChange"
+  >
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'userAvatar'">
         <a-image :src="record.userAvatar" :width="120" />
@@ -16,15 +32,16 @@
         {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
       </template>
       <template v-else-if="column.key === 'action'">
-        <a-button danger>删除</a-button>
+        <a-button @click="doDelete(record.id)" danger>删除</a-button>
       </template>
     </template>
   </a-table>
 </template>
 <script lang="ts" setup>
-import { listUserVoByPageUsingPost } from '@/api/userController'
+import { deleteUserUsingPost, listUserVoByPageUsingPost } from '@/api/userController'
 import dayjs from 'dayjs'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { message } from 'ant-design-vue'
 const columns = [
   {
     title: 'id',
@@ -80,6 +97,43 @@ const fetchData = async () => {
   if (res.data.data) {
     dataList.value = res.data.data.records ?? []
     total.value = res.data.data.total ?? 0
+  }
+}
+
+//分页参数
+const pagination = computed(() => {
+  return {
+    current: searchParams.current ?? 1,
+    pageSize: searchParams.pageSize ?? 10,
+    total: total.value,
+    showSizeChanger: true,
+    showTotal: (total:number) => `共 ${total} 条`,
+  }
+})
+
+const doTableChange = (page:API.UserQueryRequest) => {
+  searchParams.current = page.current
+  searchParams.current = page.pageSize
+  fetchData()
+}
+
+//获取数据
+const doSearch = () => {
+  // 重置页码
+  searchParams.current = 1
+  fetchData()
+}
+
+//删除数据
+const doDelete = async (id: number) => {
+  if (!id) return
+  const res = await deleteUserUsingPost({ id })
+  if (res.data.code === 0) {
+    message.success('删除成功')
+    //刷新数据
+    await fetchData()
+  }else {
+    message.error('删除失败')
   }
 }
 

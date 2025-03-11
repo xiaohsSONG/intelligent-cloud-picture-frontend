@@ -45,9 +45,9 @@
 </template>
 
 <script lang="ts" setup>
-import { h, ref } from 'vue'
+import { computed, h, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
-import { AppstoreOutlined, HomeOutlined, LogoutOutlined } from '@ant-design/icons-vue'
+import {  HomeOutlined, LogoutOutlined } from '@ant-design/icons-vue'
 import { message, type MenuProps } from 'ant-design-vue'
 import { useLoginUserStore } from '@/stores/user'
 import { userLogoutUsingPost } from '@/api/userController'
@@ -60,7 +60,9 @@ router.afterEach((to) => {
   current.value = [to.path]
 })
 
-const items = ref<MenuProps['items']>([
+// 展示在菜单的路由数组
+const items = computed<MenuProps['items']>(() => filterMenus(originItems))
+const originItems = [
   {
     key: '/',
     icon: () => h(HomeOutlined),
@@ -69,7 +71,6 @@ const items = ref<MenuProps['items']>([
   },
   {
     key: '/admin/userManage',
-    icon: () => h(AppstoreOutlined),
     label: '用户管理',
     title: '用户管理',
   },
@@ -78,7 +79,20 @@ const items = ref<MenuProps['items']>([
     label: h('a', { href: 'https://www.codefather.cn', target: '_blank' }, '编程导航'),
     title: '编程导航',
   },
-])
+]
+
+const filterMenus = (menus = [] as MenuProps['items']) => {
+  return menus?.filter((menu) => {
+    const key = String(menu?.key);
+    if(key.startsWith('/admin')){
+      const loginUser = loginUserStore.loginUser
+      if (!loginUser || loginUser.userRole !== 'admin') {
+        return false
+      }
+    }
+    return true
+  })
+}
 
 //路由跳转事件
 const doMenuClick = ({ key }: { key: string }) => {
