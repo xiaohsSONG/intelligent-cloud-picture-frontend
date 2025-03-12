@@ -13,7 +13,7 @@
           { min: 8, message: '密码长度至少8位' },
         ]"
       >
-        <a-input v-model:value="formState.userPassword" placeholder="请输入密码" />
+        <a-input type="password" v-model:value="formState.userPassword" placeholder="请输入密码" />
       </a-form-item>
       <div class="tips">
         没有账号？
@@ -28,7 +28,7 @@
 
 <script lang="ts" setup>
 import { userLoginUsingPost } from '@/api/userController'
-import { useLoginUserStore } from '@/stores/user'
+import { useLoginUserStore } from '@/stores/userLoginStore'
 import { message } from 'ant-design-vue'
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
