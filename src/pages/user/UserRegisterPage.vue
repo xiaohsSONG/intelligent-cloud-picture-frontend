@@ -19,7 +19,7 @@
           { min: 8, message: '密码长度至少8位' },
         ]"
       >
-        <a-input v-model:value="formState.userPassword" placeholder="请输入密码" />
+        <a-input type="password" v-model:value="formState.userPassword" placeholder="请输入密码" />
       </a-form-item>
       <a-form-item
         name="checkPassword"
@@ -28,7 +28,11 @@
           { min: 8, message: '密码长度至少8位' },
         ]"
       >
-        <a-input v-model:value="formState.checkPassword" placeholder="请输入确认密码" />
+        <a-input
+          type="password"
+          v-model:value="formState.checkPassword"
+          placeholder="请输入确认密码"
+        />
       </a-form-item>
       <div class="tips">
         已有账号？

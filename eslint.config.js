@@ -12,8 +12,15 @@ export default [
     name: 'app/files-to-ignore',
     ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
   },
-
   ...pluginVue.configs['flat/essential'],
   ...vueTsEslintConfig(),
+
+  // 添加关闭 any 报错的规则
+  {
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
+
   skipFormatting,
 ]

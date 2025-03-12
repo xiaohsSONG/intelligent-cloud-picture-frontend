@@ -1,3 +1,4 @@
+import ACCESS_ENUM from '@/access/accessEnum'
 import UserManagePage from '@/pages/admin/UserManagePage.vue'
 import HomePage from '@/pages/HomePage.vue'
 import UserLoginPage from '@/pages/user/UserLoginPage.vue'
@@ -26,6 +27,9 @@ const router = createRouter({
       path: '/admin/userManage',
       name: '用户管理',
       component: UserManagePage,
+      meta: {
+        access: ACCESS_ENUM.ADMIN,
+      },
     },
   ],
 })

@@ -13,7 +13,7 @@
         <a-menu
           v-model:selectedKeys="current"
           mode="horizontal"
-          :items="items"
+          :items="menus"
           @click="doMenuClick"
         />
       </a-col>
@@ -47,10 +47,16 @@
 <script lang="ts" setup>
 import { computed, h, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
-import {  HomeOutlined, LogoutOutlined } from '@ant-design/icons-vue'
+import { HomeOutlined, LogoutOutlined } from '@ant-design/icons-vue'
 import { message, type MenuProps } from 'ant-design-vue'
-import { useLoginUserStore } from '@/stores/user'
+import { useLoginUserStore } from '@/stores/userLoginStore'
 import { userLogoutUsingPost } from '@/api/userController'
+import { routes } from '@/access/routes'
+import checkAccess from '@/access/checkAccess'
+
+//获取用户信息
+const loginUserStore = useLoginUserStore()
+loginUserStore.fetchLoginUser()
 
 //当前要高亮的菜单项
 const current = ref<string[]>(['home'])
@@ -60,39 +66,30 @@ router.afterEach((to) => {
   current.value = [to.path]
 })
 
-// 展示在菜单的路由数组
-const items = computed<MenuProps['items']>(() => filterMenus(originItems))
-const originItems = [
-  {
-    key: '/',
-    icon: () => h(HomeOutlined),
-    label: '主页',
-    title: '主页',
-  },
-  {
-    key: '/admin/userManage',
-    label: '用户管理',
-    title: '用户管理',
-  },
-  {
-    key: 'others',
-    label: h('a', { href: 'https://www.codefather.cn', target: '_blank' }, '编程导航'),
-    title: '编程导航',
-  },
-]
+// 把路由项转换为菜单项
+const menuToRouteItem = (item: any) => {
+  return {
+    key: item.key, // 用于路由的跳转
+    label: item.label,
+    title: item.title,
+    icon: item.icon ?? undefined,
+  }
+}
 
-const filterMenus = (menus = [] as MenuProps['items']) => {
-  return menus?.filter((menu) => {
-    const key = String(menu?.key);
-    if(key.startsWith('/admin')){
-      const loginUser = loginUserStore.loginUser
-      if (!loginUser || loginUser.userRole !== 'admin') {
+// 过滤菜单项
+const items = computed(() => {
+  return routes
+    .filter((item) => {
+      if (item.meta?.hideInMenu) {
         return false
       }
-    }
-    return true
-  })
-}
+      // 根据权限过滤菜单，有权限则返回 true，则保留该菜单
+      return checkAccess(loginUserStore.loginUser, item.meta?.access as string)
+    })
+    .map(menuToRouteItem) // 转换为菜单项格式
+})
+
+const menus = ref<MenuProps['items']>(items.value)
 
 //路由跳转事件
 const doMenuClick = ({ key }: { key: string }) => {
@@ -100,10 +97,6 @@ const doMenuClick = ({ key }: { key: string }) => {
     path: key,
   })
 }
-
-//获取用户信息
-const loginUserStore = useLoginUserStore()
-loginUserStore.fetchLoginUser()
 
 //退出登录
 const doLogout = async () => {

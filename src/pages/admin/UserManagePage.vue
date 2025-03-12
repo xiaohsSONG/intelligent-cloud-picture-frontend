@@ -107,11 +107,11 @@ const pagination = computed(() => {
     pageSize: searchParams.pageSize ?? 10,
     total: total.value,
     showSizeChanger: true,
-    showTotal: (total:number) => `共 ${total} 条`,
+    showTotal: (total: number) => `共 ${total} 条`,
   }
 })
 
-const doTableChange = (page:API.UserQueryRequest) => {
+const doTableChange = (page: API.UserQueryRequest) => {
   searchParams.current = page.current
   searchParams.current = page.pageSize
   fetchData()
@@ -132,7 +132,7 @@ const doDelete = async (id: number) => {
     message.success('删除成功')
     //刷新数据
     await fetchData()
-  }else {
+  } else {
     message.error('删除失败')
   }
 }
