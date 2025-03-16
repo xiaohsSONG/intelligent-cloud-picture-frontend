@@ -1,6 +1,6 @@
 import { GithubOutlined, HomeOutlined } from '@ant-design/icons-vue'
 import { h } from 'vue'
-import accessEnum from '@/access/accessEnum'
+import ACCESS_ENUM from '@/access/accessEnum'
 
 export const routes = [
   {
@@ -10,7 +10,8 @@ export const routes = [
     title: '主页',
     meta: {
       hideInMenu: false,
-      access: accessEnum.NOT_LOGIN,
+      access: ACCESS_ENUM.NOT_LOGIN,
+      icon: () => h(HomeOutlined),
     },
   },
   {
@@ -19,16 +20,25 @@ export const routes = [
     title: '用户管理',
     meta: {
       hideInMenu: false,
-      access: accessEnum.ADMIN,
+      access: ACCESS_ENUM.ADMIN,
     },
   },
   {
-    key: '/about',
-    label: '关于',
-    title: '关于',
+    key:"/add_picture",
+    label:"创建图片",
+    title:"创建图片",
     meta: {
       hideInMenu: false,
-      access: accessEnum.NOT_LOGIN,
+      access: ACCESS_ENUM.ADMIN,
+    },
+  },
+  {  
+    key: '/admin/pictureManage',  
+    label: '图片管理',  
+    title: '图片管理',  
+    meta: {
+      hideInMenu: false,
+      access: ACCESS_ENUM.ADMIN,
     },
   },
   {
@@ -37,7 +47,7 @@ export const routes = [
     meta: {
       hideInMenu: false,
       icon: () => h(GithubOutlined),
-      access: accessEnum.NOT_LOGIN,
+      access: ACCESS_ENUM.NOT_LOGIN,
     },
     label: h(
       'a',
@@ -46,3 +56,4 @@ export const routes = [
     ),
   },
 ]
+

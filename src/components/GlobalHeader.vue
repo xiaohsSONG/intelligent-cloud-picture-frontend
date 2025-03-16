@@ -45,9 +45,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, h, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
-import { HomeOutlined, LogoutOutlined } from '@ant-design/icons-vue'
+import {  LogoutOutlined } from '@ant-design/icons-vue'
 import { message, type MenuProps } from 'ant-design-vue'
 import { useLoginUserStore } from '@/stores/userLoginStore'
 import { userLogoutUsingPost } from '@/api/userController'
@@ -57,7 +57,7 @@ import checkAccess from '@/access/checkAccess'
 //获取用户信息
 const loginUserStore = useLoginUserStore()
 loginUserStore.fetchLoginUser()
-
+console.log('登录用户信息:', loginUserStore.loginUser)
 //当前要高亮的菜单项
 const current = ref<string[]>(['home'])
 const router = useRouter()
