@@ -31,7 +31,7 @@ router.beforeEach(async (to, from, next) => {
     }
     // 如果已经登陆了，但是权限不足，那么跳转到无权限页面
     if (!checkAccess(loginUser, needAccess)) {
-      // next('/noAuth')
+      next('/noAuth')
       return
     }
   }
