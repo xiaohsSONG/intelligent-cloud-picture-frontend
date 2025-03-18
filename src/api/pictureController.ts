@@ -1,3 +1,4 @@
+// @ts-ignore
 /* eslint-disable */
 import request from '@/request'
 
@@ -91,6 +92,21 @@ export async function listPictureVoByPageUsingPost(
   })
 }
 
+/** doPictureReview POST /api/picture/review */
+export async function doPictureReviewUsingPost(
+  body: API.PictureReviewRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseBoolean_>('/api/picture/review', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
 /** listPictureTagCategory GET /api/picture/tag_category */
 export async function listPictureTagCategoryUsingGet(options?: { [key: string]: any }) {
   return request<API.BaseResponsePictureTagCategory_>('/api/picture/tag_category', {
@@ -150,7 +166,7 @@ export async function uploadPictureUsingPost(
       ...params,
     },
     data: formData,
-    // requestType: 'form',
+    requestType: 'form',
     ...(options || {}),
   })
 }

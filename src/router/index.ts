@@ -2,13 +2,14 @@ import UserManagePage from '@/pages/admin/UserManagePage.vue'
 import HomePage from '@/pages/HomePage.vue'
 import UserLoginPage from '@/pages/user/UserLoginPage.vue'
 import UserRegisterPage from '@/pages/user/UserRegisterPage.vue'
+import NoAuth from '@/pages/NoAuth.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import AddPicturePage from '@/pages/picture/AddPicturePage.vue'
 import PictureManagePage from '@/pages/admin/PictureManagePage.vue'
 import PictureDetailPage from '@/pages/picture/PictureDetailPage.vue'
 import ACCESS_ENUM from '@/access/accessEnum'
 import { h } from 'vue'
-import { HomeOutlined, UserOutlined, PlusOutlined, PictureOutlined, LoginOutlined, FormOutlined } from '@ant-design/icons-vue'
+import { HomeOutlined, UserOutlined, PlusOutlined, PictureOutlined, LoginOutlined, FormOutlined, GithubOutlined } from '@ant-design/icons-vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,7 +52,7 @@ const router = createRouter({
     },
     {
       path: '/add_picture',
-      name: '添加图片',
+      name: '创建图片',
       component: AddPicturePage,
       meta: {
         access: ACCESS_ENUM.ADMIN,
@@ -75,7 +76,28 @@ const router = createRouter({
       meta: {
         hideInMenu: true,
       }
-    }
+    },
+    {
+      path: '/noAuth',
+      name: '403',
+      component: NoAuth,
+      meta: {
+        hideInMenu: true,
+      }
+    },
+    {
+      path: '/Github',
+      name: 'MyGitHub',
+      component: { render: () => null },
+      beforeEnter(to, from, next) {
+        window.location.href = 'https://github.com/xiaohsSONG';
+        next('/');
+      },
+      meta: {
+        access: ACCESS_ENUM.NOT_LOGIN,
+        icon: () => h(GithubOutlined),
+      },
+    },
   ],
 })
 
