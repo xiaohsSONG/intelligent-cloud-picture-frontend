@@ -27,7 +27,7 @@
     onSuccess?: (newPicture: API.PictureVO) => void;
   }
   const props = defineProps<Props>();
-    const loading = ref<boolean>(false)  
+  const loading = ref<boolean>(false)  
   
   /**  
    * 上传  

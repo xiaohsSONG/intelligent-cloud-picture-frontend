@@ -10,6 +10,7 @@ import PictureDetailPage from '@/pages/picture/PictureDetailPage.vue'
 import ACCESS_ENUM from '@/access/accessEnum'
 import { h } from 'vue'
 import { HomeOutlined, UserOutlined, PlusOutlined, PictureOutlined, LoginOutlined, FormOutlined, GithubOutlined } from '@ant-design/icons-vue'
+import AddPictureBatchPage from '@/pages/picture/AddPictureBatchPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,14 @@ const router = createRouter({
       meta: {
         access: ACCESS_ENUM.ADMIN,
         icon: () => h(PlusOutlined),
+      }
+    },
+    {  
+      path: '/add_picture/batch',  
+      name: '批量创建图片',  
+      component: AddPictureBatchPage,
+      meta: {
+        hideInMenu: true,
       }
     },
     {
