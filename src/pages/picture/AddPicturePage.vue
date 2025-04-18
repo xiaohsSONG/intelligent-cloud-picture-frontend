@@ -130,7 +130,7 @@ const getOldPicture = async () => {
   const id = route.query.id
   if (id) {
     const res = await getPictureVoByIdUsingGet({
-      id: id,
+      id: Number(id),
     })
     if (res.data.code === 0 && res.data.data) {
       const data = res.data.data

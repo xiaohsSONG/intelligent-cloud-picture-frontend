@@ -4,9 +4,12 @@
       <a-layout-header class="header">
         <GlobalHeader />
       </a-layout-header>
-      <a-layout-content class="content">
-        <router-view />
-      </a-layout-content>
+      <a-layout>
+        <GlobalSider class="sider" />
+        <a-layout-content class="content">
+          <router-view />
+        </a-layout-content>
+      </a-layout>
       <a-layout-footer class="footer">
         <a href="https://www.codefather.cn" target="_blank"> codefather by aidishen </a>
       </a-layout-footer>
@@ -16,12 +19,13 @@
 
 <script setup lang="ts">
 import GlobalHeader from '@/components/GlobalHeader.vue'
+import GlobalSider from '@/components/GlobalSider.vue'
 </script>
 
 <style scoped>
 #basicLayout .header {
   padding-inline: 20px;
-  margin-bottom: 16px;
+  margin-bottom: 1px;
   color: unset;
   background: white;
 }
@@ -29,7 +33,7 @@ import GlobalHeader from '@/components/GlobalHeader.vue'
 #basicLayout .content {
   background: linear-gradient(to right, #fefefe, #fff);
   margin-bottom: 28px;
-  padding: 20px;
+  padding: 28px;
 }
 #basicLayout .footer {
   background: #efefef;
@@ -39,5 +43,15 @@ import GlobalHeader from '@/components/GlobalHeader.vue'
   left: 0;
   right: 0;
   text-align: center;
+}
+#basicLayout .sider {
+  background: #fff;
+  padding-top: 20px;
+  border-right: 0.5px solid #eee;
+}
+
+#basicLayout :deep(.ant-menu-root) {
+  border-bottom: none !important;
+  border-inline-end: none !important;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <a-form layout="inline" :model="searchParams" @finish="doSearch">
+  <a-form layout="inline" :model="searchParams" @finish="doSearch" style="padding: 0 0 10px 0;">
     <a-form-item label="账号">
       <a-input v-model:value="searchParams.userAccount" placeholder="输入账号" />
     </a-form-item>

@@ -31,6 +31,12 @@
                     <LogoutOutlined />
                     退出登录
                   </a-menu-item>
+                  <a-menu-item>
+                    <router-link to="/my_space">
+                      <UserOutlined />
+                      我的空间
+                    </router-link>
+                  </a-menu-item>
                 </a-menu>
               </template>
             </a-dropdown>
@@ -47,7 +53,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
-import {  LogoutOutlined } from '@ant-design/icons-vue'
+import { LogoutOutlined,UserOutlined } from '@ant-design/icons-vue'
 import { message, type MenuProps } from 'ant-design-vue'
 import { useLoginUserStore } from '@/stores/userLoginStore'
 import { userLogoutUsingPost } from '@/api/userController'
@@ -79,33 +85,33 @@ const menuToRouteItem = (item: any) => {
 
 // 过滤菜单项
 const items = computed(() => {
-  const routes = router.getRoutes();
+  const routes = router.getRoutes()
   const menuItems = routes
     .filter((menu) => {
-      const item = menuToRouteItem(menu);
+      const item = menuToRouteItem(menu)
       if (item.meta?.hideInMenu) {
-        return false;
+        return false
       }
       // 根据权限过滤菜单，有权限则返回 true，则保留该菜单
-      return checkAccess(loginUserStore.loginUser, item.meta?.access as string);
+      return checkAccess(loginUserStore.loginUser, item.meta?.access as string)
     })
     .map((menu) => {
-      const item = menuToRouteItem(menu);
+      const item = menuToRouteItem(menu)
       if (!item.key && menu.path) {
-        item.key = menu.path;
+        item.key = menu.path
       }
-      return item;
-    });
+      return item
+    })
 
   // 确保主页在菜单项中的第一个位置
-  const homeIndex = menuItems.findIndex(item => item.key === '/');
+  const homeIndex = menuItems.findIndex((item) => item.key === '/')
   if (homeIndex > 0) {
-    const homeItem = menuItems.splice(homeIndex, 1)[0];
-    menuItems.unshift(homeItem);
+    const homeItem = menuItems.splice(homeIndex, 1)[0]
+    menuItems.unshift(homeItem)
   }
 
-  return menuItems;
-});
+  return menuItems
+})
 const menus = computed<MenuProps['items']>(() => items.value)
 console.log(menus.value)
 
