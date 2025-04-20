@@ -4,7 +4,7 @@
     <a-flex justify="space-between">
       <h2>{{ space.spaceName }}（私有空间）</h2>
       <a-space size="middle">
-        <a-button type="primary" :href="`/add_picture?spaceId=${id}`" target="_blank">
+        <a-button type="primary" :href="`/add_picture?spaceId=${id}`">
           + 创建图片
         </a-button>
         <a-tooltip
@@ -23,7 +23,7 @@
       </a-space>
     </a-flex>
     <!-- 图片列表 -->
-    <PictureList :dataList="dataList" :loading="loading" />
+    <PictureList :dataList="dataList" showOp :onReload="fetchData"  :loading="loading" />
     <a-pagination
       style="text-align: right"
       v-model:current="searchParams.current"
@@ -41,17 +41,20 @@ import { getSpaceVoByIdUsingGet } from '@/api/spaceController'
 import { message } from 'ant-design-vue'
 import { ref, onMounted, reactive } from 'vue'
 import { formatSize } from '@/utils'
-
-const props = defineProps<{
-  id: string | number
-}>()
+import { useRoute } from 'vue-router'
+import PictureList from '@/components/PictureList.vue'
+const route = useRoute()
+const id = ref<number>(route.params.id as unknown as number)
+// const props = defineProps<{
+//   id: string | number
+// }>()
 const space = ref<API.SpaceVO>({})
 
 // 获取空间详情
 const fetchSpaceDetail = async () => {
   try {
     const res = await getSpaceVoByIdUsingGet({
-      id: typeof props.id === 'string' ? parseInt(props.id, 10) : props.id,
+      id: id.value,
     })
     if (res.data.code === 0 && res.data.data) {
       space.value = res.data.data
@@ -64,6 +67,7 @@ const fetchSpaceDetail = async () => {
 }
 
 onMounted(() => {
+  console.log('12313',route.params.id)
   fetchSpaceDetail()
 })
 
@@ -92,7 +96,7 @@ const fetchData = async () => {
   loading.value = true
   // 转换搜索参数
   const params = {
-    spaceId: typeof props.id === 'string' ? parseInt(props.id, 10) : props.id,
+    spaceId: id.value,
     ...searchParams,
   }
   const res = await listPictureVoByPageUsingPost(params)

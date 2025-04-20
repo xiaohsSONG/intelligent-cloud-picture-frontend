@@ -25,7 +25,6 @@ import GlobalSider from '@/components/GlobalSider.vue'
 <style scoped>
 #basicLayout .header {
   padding-inline: 20px;
-  margin-bottom: 1px;
   color: unset;
   background: white;
 }

@@ -10,6 +10,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AddPicturePage from '@/pages/picture/AddPicturePage.vue'
 import PictureManagePage from '@/pages/admin/PictureManagePage.vue'
 import PictureDetailPage from '@/pages/picture/PictureDetailPage.vue'
+import AddSpacePage from '@/pages/space/AddSpacePage.vue'
 import ACCESS_ENUM from '@/access/accessEnum'
 import { h } from 'vue'
 import { HomeOutlined, UserOutlined, PlusOutlined, PictureOutlined, LoginOutlined, FormOutlined, GithubOutlined, DatabaseOutlined } from '@ant-design/icons-vue'
@@ -59,7 +60,7 @@ const router = createRouter({
       name: '创建图片',
       component: AddPicturePage,
       meta: {
-        access: ACCESS_ENUM.ADMIN,
+        access: ACCESS_ENUM.USER,
         icon: () => h(PlusOutlined),
       }
     },
@@ -98,6 +99,15 @@ const router = createRouter({
         icon: () => h(DatabaseOutlined),
       }
     },
+    {
+      path: '/add_space',
+      name: '创建空间',
+      component: AddSpacePage,
+      meta:{
+        hideInMenu:true
+      }
+    },
+
     {
       path: '/my_space',
       name: '我的空间',

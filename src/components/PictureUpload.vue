@@ -17,16 +17,19 @@
 
   </template>
   <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { onMounted, ref } from 'vue';
   import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
   import { message } from 'ant-design-vue';
   import { uploadPictureUsingPost } from '@/api/pictureController';
 
-  interface Props{
-    picture?: API.PictureVO;
-    onSuccess?: (newPicture: API.PictureVO) => void;
+  interface Props {
+    picture?: API.PictureVO
+    spaceId?: number
+    onSuccess?: (newPicture: API.PictureVO) => void
   }
   const props = defineProps<Props>();
+  console.log("props",props)
+
   const loading = ref<boolean>(false)
 
   /**
@@ -36,7 +39,10 @@
   const handleUpload = async ({ file }: any) => {
     loading.value = true
     try {
-      const params = props.picture ? { id: props.picture.id } : {};
+      // 上传时传递 spaceId
+      const params: API.PictureUploadRequest = props.picture ? { id: props.picture.id } : {}
+      params.spaceId = props.spaceId;
+      console.log('上传参数', params)
       const res = await uploadPictureUsingPost(params, {}, file)
       if (res.data.code === 0 && res.data.data) {
         message.success('图片上传成功')
@@ -51,6 +57,10 @@
       loading.value = false
     }
   }
+  onMounted(() => {
+    // 如果有图片，则设置图片信息
+    console.log(props)
+  })
 
 
   const beforeUpload = (file: any) => {

@@ -113,7 +113,6 @@ const items = computed(() => {
   return menuItems
 })
 const menus = computed<MenuProps['items']>(() => items.value)
-console.log(menus.value)
 
 //路由跳转事件
 const doMenuClick = ({ key }: { key: string }) => {
