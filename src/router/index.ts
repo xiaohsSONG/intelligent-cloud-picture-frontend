@@ -11,6 +11,7 @@ import AddPicturePage from '@/pages/picture/AddPicturePage.vue'
 import PictureManagePage from '@/pages/admin/PictureManagePage.vue'
 import PictureDetailPage from '@/pages/picture/PictureDetailPage.vue'
 import AddSpacePage from '@/pages/space/AddSpacePage.vue'
+import SearchPicturePage from '../pages/picture/SearchPicturePage.vue'
 import ACCESS_ENUM from '@/access/accessEnum'
 import { h } from 'vue'
 import { HomeOutlined, UserOutlined, PlusOutlined, PictureOutlined, LoginOutlined, FormOutlined, GithubOutlined, DatabaseOutlined } from '@ant-design/icons-vue'
@@ -86,6 +87,14 @@ const router = createRouter({
       name: '图片详情',
       component: PictureDetailPage,
       props: true,
+      meta: {
+        hideInMenu: true,
+      }
+    },
+    {
+      path: '/search_picture',
+      name: '图片搜索',
+      component: SearchPicturePage,
       meta: {
         hideInMenu: true,
       }

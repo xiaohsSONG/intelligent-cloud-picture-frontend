@@ -1,12 +1,17 @@
 <template>
   <div id="spaceDetailPage">
+    <!-- 搜索表单 -->
+    <PictureSearchForm :onSearch="onSearch" />
+    <!-- 按颜色搜索 -->
+    <a-form-item label="按颜色搜索" style="margin-top: 16px">
+      <color-picker format="hex"  />
+    </a-form-item>
+
     <!-- 空间信息 -->
     <a-flex justify="space-between">
       <h2>{{ space.spaceName }}（私有空间）</h2>
       <a-space size="middle">
-        <a-button type="primary" :href="`/add_picture?spaceId=${id}`">
-          + 创建图片
-        </a-button>
+        <a-button type="primary" :href="`/add_picture?spaceId=${id}`"> + 创建图片 </a-button>
         <a-tooltip
           :title="`占用空间 ${formatSize(space.totalSize)} / ${formatSize(space.maxSize)}`"
         >
@@ -23,7 +28,7 @@
       </a-space>
     </a-flex>
     <!-- 图片列表 -->
-    <PictureList :dataList="dataList" showOp :onReload="fetchData"  :loading="loading" />
+    <PictureList :dataList="dataList" showOp :onReload="fetchData" :loading="loading" />
     <a-pagination
       style="text-align: right"
       v-model:current="searchParams.current"
@@ -39,15 +44,14 @@
 import { listPictureVoByPageUsingPost } from '@/api/pictureController'
 import { getSpaceVoByIdUsingGet } from '@/api/spaceController'
 import { message } from 'ant-design-vue'
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted } from 'vue'
 import { formatSize } from '@/utils'
 import { useRoute } from 'vue-router'
 import PictureList from '@/components/PictureList.vue'
+import PictureSearchForm from '@/components/PictureSearchForm.vue'
+import { ColorPicker } from 'vue3-colorpicker'
 const route = useRoute()
 const id = ref<number>(route.params.id as unknown as number)
-// const props = defineProps<{
-//   id: string | number
-// }>()
 const space = ref<API.SpaceVO>({})
 
 // 获取空间详情
@@ -66,18 +70,13 @@ const fetchSpaceDetail = async () => {
   }
 }
 
-onMounted(() => {
-  console.log('12313',route.params.id)
-  fetchSpaceDetail()
-})
-
 // 数据
 const dataList = ref<API.PictureVO[]>([])
 const total = ref(0)
 const loading = ref(true)
 
 // 搜索条件
-const searchParams = reactive<API.PictureQueryRequest>({
+const searchParams = ref<API.PictureQueryRequest>({
   current: 1,
   pageSize: 12,
   sortField: 'createTime',
@@ -86,10 +85,21 @@ const searchParams = reactive<API.PictureQueryRequest>({
 
 // 分页参数
 const onPageChange = (page: number, pageSize: number) => {
-  searchParams.current = page
-  searchParams.pageSize = pageSize
+  searchParams.value.current = page
+  searchParams.value.pageSize = pageSize
   fetchData()
 }
+
+// 搜索
+const onSearch = (newSearchParams: API.PictureQueryRequest) => {
+  searchParams.value = {
+    ...searchParams.value,
+    ...newSearchParams,
+    current: 1,
+  }
+  fetchData()
+}
+
 
 // 获取数据
 const fetchData = async () => {
@@ -97,7 +107,7 @@ const fetchData = async () => {
   // 转换搜索参数
   const params = {
     spaceId: id.value,
-    ...searchParams,
+    ...searchParams.value,
   }
   const res = await listPictureVoByPageUsingPost(params)
   if (res.data.data) {
@@ -111,6 +121,7 @@ const fetchData = async () => {
 
 // 页面加载时请求一次
 onMounted(() => {
+  fetchSpaceDetail()
   fetchData()
 })
 </script>

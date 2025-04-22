@@ -31,6 +31,10 @@
               </template>
             </a-card-meta>
             <template v-if="showOp" #actions>
+              <a-space @click="(e: MouseEvent) => doSearch(picture, e)">
+                <search-outlined />
+                搜索
+              </a-space>
               <a-space @click="(e: MouseEvent) => doEdit(picture, e)">
                 <edit-outlined />
                 编辑
@@ -40,7 +44,6 @@
                 删除
               </a-space>
             </template>
-
           </a-card>
         </a-list-item>
       </template>
@@ -49,17 +52,16 @@
 </template>
 
 <script setup lang="ts">
-import { deletePictureUsingPost } from '@/api/pictureController';
-import { message } from 'ant-design-vue';
+import { deletePictureUsingPost } from '@/api/pictureController'
+import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
-
+import { SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 interface Props {
   dataList?: API.PictureVO[]
   loading?: boolean
   showOp?: boolean
   onReload?: () => void
 }
-
 
 const props = withDefaults(defineProps<Props>(), {
   dataList: () => [],
@@ -68,17 +70,23 @@ const props = withDefaults(defineProps<Props>(), {
   onReload: () => {},
 })
 
-
 // 跳转至图片详情
 const router = useRouter()
-const doClickPicture = (picture:any) => {
+const doClickPicture = (picture: any) => {
   router.push({
     path: `/picture/${picture.id}`,
   })
 }
 
+// 搜索
+const doSearch = (picture: { id: any; spaceId: any }, e: { stopPropagation: () => void }) => {
+  e.stopPropagation()
+  window.open(`/search_picture?pictureId=${picture.id}`)
+}
+
+
 // 编辑
-const doEdit = (picture: { id: any; spaceId: any; }, e: { stopPropagation: () => void; }) => {
+const doEdit = (picture: { id: any; spaceId: any }, e: { stopPropagation: () => void }) => {
   e.stopPropagation()
   router.push({
     path: '/add_picture',
@@ -90,7 +98,7 @@ const doEdit = (picture: { id: any; spaceId: any; }, e: { stopPropagation: () =>
 }
 
 // 删除
-const doDelete = async (picture: { id: any; }, e: MouseEvent) => {
+const doDelete = async (picture: { id: any }, e: MouseEvent) => {
   e.stopPropagation()
   const id = picture.id
   if (!id) {
@@ -105,7 +113,6 @@ const doDelete = async (picture: { id: any; }, e: MouseEvent) => {
     message.error('删除失败')
   }
 }
-
 </script>
 
 <style scoped></style>
