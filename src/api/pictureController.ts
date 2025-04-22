@@ -1,3 +1,4 @@
+// @ts-ignore
 /* eslint-disable */
 import request from '@/request'
 
@@ -112,6 +113,21 @@ export async function doPictureReviewUsingPost(
   options?: { [key: string]: any }
 ) {
   return request<API.BaseResponseBoolean_>('/api/picture/review', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
+/** searchPictureByColor POST /api/picture/search/color */
+export async function searchPictureByColorUsingPost(
+  body: API.SearchPictureByColorRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseListPictureVO_>('/api/picture/search/color', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

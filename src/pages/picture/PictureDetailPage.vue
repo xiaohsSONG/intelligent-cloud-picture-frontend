@@ -49,6 +49,20 @@
             <a-descriptions-item label="大小">
               {{ formatSize(picture.picSize) }}
             </a-descriptions-item>
+            <a-descriptions-item label="主色调">
+              <a-space>
+                {{ picture.picColor ?? '-' }}
+                <div
+                  v-if="picture.picColor"
+                  :style="{
+                    backgroundColor: toHexColor(picture.picColor),
+                    width: '16px',
+                    height: '16px',
+                  }"
+                />
+              </a-space>
+            </a-descriptions-item>
+
           </a-descriptions>
           <a-space wrap>
             <a-button type="primary" @click="doDownload">
@@ -80,7 +94,7 @@
 import { deletePictureUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureController';
 import { message, Modal } from 'ant-design-vue';
 import { computed, onMounted, ref } from 'vue';
-import { downloadImage, formatSize } from '@/utils';
+import { downloadImage, formatSize,toHexColor } from '@/utils';
 import { useLoginUserStore } from '@/stores/userLoginStore';
 import router from '@/router';
 
