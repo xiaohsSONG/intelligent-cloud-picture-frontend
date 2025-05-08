@@ -12,23 +12,25 @@
       </template>
     </a-card>
     <h3 style="margin: 16px 0">识图结果</h3>
-    <!-- 图片列表 -->
-    <a-list
-      :grid="{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 5, xxl: 6 }"
-      :data-source="dataList"
-    >
-      <template #renderItem="{ item }">
-        <a-list-item style="padding: 0">
-          <a :href="item.fromUrl" target="_blank">
-            <a-card>
-              <template #cover>
-                <img style="height: 180px; object-fit: cover" :src="item.thumbUrl" />
-              </template>
-            </a-card>
-          </a>
-        </a-list-item>
-      </template>
-    </a-list>
+    <!-- 加载动画包裹图片列表 -->
+    <a-spin :spinning="loading" tip="加载中...">
+      <a-list
+        :grid="{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 5, xxl: 6 }"
+        :data-source="dataList"
+      >
+        <template #renderItem="{ item }">
+          <a-list-item style="padding: 0">
+            <a :href="item.fromUrl" target="_blank">
+              <a-card>
+                <template #cover>
+                  <img style="height: 180px; object-fit: cover" :src="item.thumbUrl" />
+                </template>
+              </a-card>
+            </a>
+          </a-list-item>
+        </template>
+      </a-list>
+    </a-spin>
   </div>
 </template>
 
@@ -36,7 +38,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { getPictureVoByIdUsingGet, searchPictureByPictureUsingPost } from '@/api/pictureController'
-import { message } from 'ant-design-vue'
+import { message} from 'ant-design-vue'
 
 const route = useRoute()
 
@@ -46,42 +48,52 @@ const pictureId = computed(() => {
 })
 
 const picture = ref<API.PictureVO>({})
+const dataList = ref<API.ImageSearchResult[]>([])
+const loading = ref<boolean>(false) // 定义 loading 状态
 
 // 获取老数据
 const getOldPicture = async () => {
-  // 获取数据
-  const id = route.query?.pictureId
-  if (id) {
-    const res = await getPictureVoByIdUsingGet({
-      id: id as unknown as number,
-    })
-    if (res.data.code === 0 && res.data.data) {
-      const data = res.data.data
-      picture.value = data
+  loading.value = true // 开始加载
+  try {
+    const id = route.query?.pictureId
+    if (id) {
+      const res = await getPictureVoByIdUsingGet({
+        id: id as unknown as number,
+      })
+      if (res.data.code === 0 && res.data.data) {
+        const data = res.data.data
+        picture.value = data
+      }
     }
+  } catch {
+    message.error('获取原图失败')
+  } finally {
+    loading.value = false // 加载结束
   }
 }
 
-const dataList = ref<API.ImageSearchResult[]>([])
 // 获取搜图结果
 const fetchData = async () => {
-  const res = await searchPictureByPictureUsingPost({
-    pictureId: pictureId.value as unknown as number,
-  })
-  if (res.data.code === 0 && res.data.data) {
-    dataList.value = res.data.data ?? []
-  } else {
-    message.error('获取数据失败，' + res.data.message)
+  loading.value = true // 开始加载
+  try {
+    const res = await searchPictureByPictureUsingPost({
+      pictureId: pictureId.value as unknown as number,
+    })
+    if (res.data.code === 0 && res.data.data) {
+      dataList.value = res.data.data ?? []
+    } else {
+      message.error('获取数据失败，' + res.data.message)
+    }
+  } catch {
+    message.error('加载失败')
+  } finally {
+    loading.value = false // 加载结束
   }
 }
 
 // 页面加载时请求一次
 onMounted(() => {
   fetchData()
-})
-
-
-onMounted(() => {
   getOldPicture()
 })
 </script>

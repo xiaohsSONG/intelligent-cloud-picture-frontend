@@ -74,7 +74,6 @@
   }
   return isJpgOrPng && isLt2M
 }
-
   </script>
   <style scoped>
   .picture-upload :deep(.ant-upload) {
